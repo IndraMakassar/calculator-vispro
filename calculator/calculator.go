@@ -1,28 +1,33 @@
 package calculator
 
-import "calculatorWeb/mathops"
+import (
+	"calculatorWeb/mathops"
+	"errors"
+)
 
-func Add(firstNumber, secondNumber float64) float64 {
-	return mathops.Add(firstNumber, secondNumber)
+type Request struct {
+	FirstNumber  float64 `json:"firstNumber"`
+	Operation    string  `json:"operation"`
+	SecondNumber float64 `json:"secondNumber"`
 }
 
-func Subtract(firstNumber, secondNumber float64) float64 {
-	return mathops.Subtract(firstNumber, secondNumber)
-}
-
-func Multiply(firstNumber, secondNumber float64) float64 {
-	return mathops.Multiply(firstNumber, secondNumber)
-}
-
-func Divide(firstNumber, secondNumber float64) float64 {
-	hasil, _ := mathops.Divide(firstNumber, secondNumber)
-	return hasil
-}
-
-func Power(firstNumber, secondNumber float64) float64 {
-	result := 1.0
-	for i := 0.0; i < secondNumber; i++ {
-		result = Multiply(result, firstNumber)
+func Calculate(request Request) (float64, error) {
+	switch request.Operation {
+	case "+":
+		return mathops.Add(request.FirstNumber, request.SecondNumber), nil
+	case "-":
+		return mathops.Subtract(request.FirstNumber, request.SecondNumber), nil
+	case "*":
+		return mathops.Multiply(request.FirstNumber, request.SecondNumber), nil
+	case "/":
+		return mathops.Divide(request.FirstNumber, request.SecondNumber)
+	case "^":
+		result := 1.0
+		for i := 0.0; i < request.SecondNumber; i++ {
+			result = mathops.Multiply(result, request.FirstNumber)
+		}
+		return result, nil
+	default:
+		return 0, errors.New("invalid operation")
 	}
-	return result
 }

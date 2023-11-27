@@ -2,11 +2,9 @@ package ui
 
 import (
 	"calculatorWeb/calculator"
-	"errors"
 	_ "fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 	_ "strconv"
 )
 
@@ -26,36 +24,21 @@ func StartWebCalculator() {
 }
 
 func calculateHandler(c *gin.Context) {
-	var num1, num2 float64
-	var operation string
+	var request calculator.Request
 
-	// Get data from the request
-	num1, _ = strconv.ParseFloat(c.PostForm("num1"), 64)
-	num2, _ = strconv.ParseFloat(c.PostForm("num2"), 64)
-	operation = c.PostForm("operation")
+	println(c.JSON)
 
-	// Perform the calculation
-	result, err := calculate(float64(num1), float64(num2), operation)
-	if err != nil {
+	if err := c.BindJSON(&request); err != nil {
+		println("1")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"result": result})
-	}
-}
-
-func calculate(a, b float64, operation string) (float64, error) {
-	switch operation {
-	case "+":
-		return calculator.Add(a, b), nil
-	case "-":
-		return calculator.Subtract(a, b), nil
-	case "*":
-		return calculator.Multiply(a, b), nil
-	case "/":
-		return calculator.Divide(a, b), nil
-	case "^":
-		return calculator.Power(a, b), nil
-	default:
-		return 0, errors.New("invalid operation")
+		println("2")
+		result, err := calculator.Calculate(request)
+		if err != nil {
+			println("3")
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"result": result})
+		}
 	}
 }
