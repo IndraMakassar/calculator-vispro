@@ -26,8 +26,6 @@ func StartWebCalculator() {
 func calculateHandler(c *gin.Context) {
 	var request calculator.Request
 
-	println(c.JSON)
-
 	if err := c.BindJSON(&request); err != nil {
 		println("1")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
