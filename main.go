@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"calculatorWeb/ui"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	ui.StartWebCalculator()
 }
