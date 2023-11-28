@@ -10,17 +10,13 @@ import (
 
 func StartWebCalculator() {
 	router := gin.Default()
-
 	router.LoadHTMLGlob("templates/*")
-
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
 	})
-
 	router.Static("/static", "./static")
 	router.POST("/calculate", calculateHandler)
-
-	router.Run(":8080")
+	router.Run(":80")
 }
 
 func calculateHandler(c *gin.Context) {
